@@ -21,12 +21,12 @@ import (
 // It is usually loaded from a whole todo.txt file.
 type TaskList []Task
 
-// IgnoreComments can be set to 'false', in order to revert to a more standard todo.txt behaviour.
+// IgnoreComments can be set to 'true', to ignore lines that start with #
 // The todo.txt format does not define comments.
 var (
 	// IgnoreComments is used to switch ignoring of comments (lines starting with "#").
 	// If this is set to 'false', then lines starting with "#" will be parsed as tasks.
-	IgnoreComments = true
+	IgnoreComments = false
 )
 
 // NewTaskList creates a new empty TaskList.
