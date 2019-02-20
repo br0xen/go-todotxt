@@ -109,6 +109,19 @@ func (tasklist *TaskList) RemoveTask(task Task) error {
 	return nil
 }
 
+func (tasklist *TaskList) ArchiveTaskToFile(task Task, filename string) error {
+	if err := tasklist.RemoveTask(task); err != nil {
+		return err
+	}
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = f.WriteString("\n" + task.String())
+	return err
+}
+
 // Filter filters the current TaskList for the given predicate (a function that takes a task as input and returns a bool),
 // and returns a new TaskList. The original TaskList is not modified.
 func (tasklist *TaskList) Filter(predicate func(Task) bool) *TaskList {
