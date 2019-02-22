@@ -30,9 +30,8 @@ var (
 )
 
 // NewTaskList creates a new empty TaskList.
-func NewTaskList() TaskList {
-	tasklist := TaskList{}
-	return tasklist
+func NewTaskList() *TaskList {
+	return &TaskList{}
 }
 
 // String returns a complete list of tasks in todo.txt format.
@@ -109,6 +108,9 @@ func (tasklist *TaskList) RemoveTask(task Task) error {
 	return nil
 }
 
+// ArchiveTaskToFile removes the task from the active list and concatenates it to
+// the passed in filename
+// Return an err if any part of that fails
 func (tasklist *TaskList) ArchiveTaskToFile(task Task, filename string) error {
 	if err := tasklist.RemoveTask(task); err != nil {
 		return err
@@ -118,7 +120,7 @@ func (tasklist *TaskList) ArchiveTaskToFile(task Task, filename string) error {
 		return err
 	}
 	defer f.Close()
-	_, err = f.WriteString("\n" + task.String())
+	_, err = f.WriteString(task.String() + "\n")
 	return err
 }
 
