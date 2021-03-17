@@ -72,7 +72,7 @@ func (tasklist *TaskList) sortBy(by func(t1, t2 *Task) bool) *TaskList {
 
 func (tasklist *TaskList) sortByUsefulness(order int) *TaskList {
 	tasklist.sortBy(func(t1, t2 *Task) bool {
-		res := t1.CreatedDate.Before(t2.CreatedDat)
+		res := t1.CreatedDate.Before(t2.CreatedDate)
 		if t1.Completed {
 			if !t2.Completed {
 				res = false
