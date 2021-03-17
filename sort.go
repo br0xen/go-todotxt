@@ -20,6 +20,8 @@ const (
 	SORT_COMPLETED_DATE_DESC
 	SORT_DUE_DATE_ASC
 	SORT_DUE_DATE_DESC
+	SORT_USEFULNESS_ASC
+	SORT_USEFULNESS_DESC
 )
 
 // Sort allows a TaskList to be sorted by certain predefined fields.
@@ -34,6 +36,8 @@ func (tasklist *TaskList) Sort(sortFlag int) error {
 		tasklist.sortByCompletedDate(sortFlag)
 	case SORT_DUE_DATE_ASC, SORT_DUE_DATE_DESC:
 		tasklist.sortByDueDate(sortFlag)
+	case SORT_USEFULNESS_ASC, SORT_USEFULNESS_DESC:
+		tasklist.sortByUsefulness(sortFlag)
 	default:
 		return errors.New("unrecognized sort option")
 	}
@@ -63,6 +67,32 @@ func (tasklist *TaskList) sortBy(by func(t1, t2 *Task) bool) *TaskList {
 		by:        by,
 	}
 	sort.Sort(ts)
+	return tasklist
+}
+
+func (tasklist *TaskList) sortByUsefulness(order int) *TaskList {
+	tasklist.sortBy(func(t1, t2 *Task) bool {
+		res := t1.CreatedDate.Before(t2.CreatedDat)
+		if t1.Completed {
+			if !t2.Completed {
+				res = false
+			}
+		} else if t2.Completed {
+			res = false
+		} else if !t1.DueDate.IsZero() {
+			if !t2.DueDate.IsZero() {
+				res = t1.DueDate.Before(t2.DueDate)
+			}
+		} else if !t2.DueDate.IsZero() {
+			res = false
+		}
+
+		if order == SORT_USEFULNESS_ASC {
+			return res
+		} else {
+			return !res
+		}
+	})
 	return tasklist
 }
 
